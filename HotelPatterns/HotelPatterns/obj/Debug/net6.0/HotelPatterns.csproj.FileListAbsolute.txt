@@ -1,0 +1,15 @@
+C:\Users\alekseynepryakhin\Documents\Visual Studio Projects\HotelPatterns\HotelPatterns\bin\Debug\net6.0\HotelPatterns.exe
+C:\Users\alekseynepryakhin\Documents\Visual Studio Projects\HotelPatterns\HotelPatterns\bin\Debug\net6.0\HotelPatterns.deps.json
+C:\Users\alekseynepryakhin\Documents\Visual Studio Projects\HotelPatterns\HotelPatterns\bin\Debug\net6.0\HotelPatterns.runtimeconfig.json
+C:\Users\alekseynepryakhin\Documents\Visual Studio Projects\HotelPatterns\HotelPatterns\bin\Debug\net6.0\HotelPatterns.dll
+C:\Users\alekseynepryakhin\Documents\Visual Studio Projects\HotelPatterns\HotelPatterns\bin\Debug\net6.0\HotelPatterns.pdb
+C:\Users\alekseynepryakhin\Documents\Visual Studio Projects\HotelPatterns\HotelPatterns\obj\Debug\net6.0\HotelPatterns.csproj.AssemblyReference.cache
+C:\Users\alekseynepryakhin\Documents\Visual Studio Projects\HotelPatterns\HotelPatterns\obj\Debug\net6.0\HotelPatterns.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\alekseynepryakhin\Documents\Visual Studio Projects\HotelPatterns\HotelPatterns\obj\Debug\net6.0\HotelPatterns.AssemblyInfoInputs.cache
+C:\Users\alekseynepryakhin\Documents\Visual Studio Projects\HotelPatterns\HotelPatterns\obj\Debug\net6.0\HotelPatterns.AssemblyInfo.cs
+C:\Users\alekseynepryakhin\Documents\Visual Studio Projects\HotelPatterns\HotelPatterns\obj\Debug\net6.0\HotelPatterns.csproj.CoreCompileInputs.cache
+C:\Users\alekseynepryakhin\Documents\Visual Studio Projects\HotelPatterns\HotelPatterns\obj\Debug\net6.0\HotelPatterns.dll
+C:\Users\alekseynepryakhin\Documents\Visual Studio Projects\HotelPatterns\HotelPatterns\obj\Debug\net6.0\refint\HotelPatterns.dll
+C:\Users\alekseynepryakhin\Documents\Visual Studio Projects\HotelPatterns\HotelPatterns\obj\Debug\net6.0\HotelPatterns.pdb
+C:\Users\alekseynepryakhin\Documents\Visual Studio Projects\HotelPatterns\HotelPatterns\obj\Debug\net6.0\HotelPatterns.genruntimeconfig.cache
+C:\Users\alekseynepryakhin\Documents\Visual Studio Projects\HotelPatterns\HotelPatterns\obj\Debug\net6.0\ref\HotelPatterns.dll
