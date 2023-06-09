@@ -7,48 +7,51 @@ namespace HotelPatterns
     // Абстрактный класс отеля
     abstract class Hotel
     {
-        public abstract Room CreateRoom();
+        public abstract Room CreateRoom(string roomNumber);
     }
 
     // Конкретный класс отеля
     class LuxuryHotel : Hotel
     {
-        public override Room CreateRoom()
+        public override Room CreateRoom(string roomNumber)
         {
-            return new LuxuryRoom();
+            return new LuxuryRoom(roomNumber);
         }
     }
 
     // Конкретный класс отеля
     class BudgetHotel : Hotel
     {
-        public override Room CreateRoom()
+        public override Room CreateRoom(string roomNumber)
         {
-            return new BudgetRoom();
+            return new BudgetRoom(roomNumber);
         }
     }
 
     // Абстрактный класс комнаты
     abstract class Room
     {
-        public abstract void Display();
+        protected Room(string roomNumber)
+        {
+            RoomNumber = roomNumber;
+        }
+
+        public string RoomNumber { get; internal set; }
     }
 
     // Конкретный класс комнаты
     class LuxuryRoom : Room
     {
-        public override void Display()
+        public LuxuryRoom(string roomNumber) : base(roomNumber)
         {
-            Console.WriteLine("Luxury Room");
         }
     }
 
     // Конкретный класс комнаты
     class BudgetRoom : Room
     {
-        public override void Display()
+        public BudgetRoom(string roomNumber) : base(roomNumber)
         {
-            Console.WriteLine("Budget Room");
         }
     }
     #endregion
@@ -106,266 +109,126 @@ namespace HotelPatterns
     #endregion
 
     #region Состояние
-    // Контекст (класс бронирования)
-    class BookingContext
+
+    class RoomBookingState
     {
-        private BookingState currentState;
+        private Room room;
+        private bool isBooked;
+        private bool isUnderCleaning;
+        private bool isUnderRepair;
 
-        public BookingContext()
-        {
-            TransitionTo(new DateSelectionState());
-        }
-
-        public void TransitionTo(BookingState state)
-        {
-            currentState = state;
-            currentState.SetContext(this);
-        }
-
-        public void SelectDate(DateTime date)
-        {
-            currentState.SelectDate(date);
-        }
-
-        public void SelectRoom(string roomNumber)
-        {
-            currentState.SelectRoom(roomNumber);
-        }
-
-        public void ConfirmBooking()
-        {
-            currentState.ConfirmBooking();
-        }
-    }
-
-    // Абстрактное состояние
-    abstract class BookingState
-    {
-        protected BookingContext context;
-
-        public void SetContext(BookingContext context)
-        {
-            this.context = context;
-        }
-
-        public abstract void SelectDate(DateTime date);
-        public abstract void SelectRoom(string roomNumber);
-        public abstract void ConfirmBooking();
-    }
-
-    // Конкретное состояние
-    class DateSelectionState : BookingState
-    {
-        public override void SelectDate(DateTime date)
-        {
-            Console.WriteLine("Selected date: " + date);
-            // Переход к следующему состоянию
-            context.TransitionTo(new RoomSelectionState());
-        }
-
-        public override void SelectRoom(string roomNumber)
-        {
-            Console.WriteLine("Please select a date first.");
-        }
-
-        public override void ConfirmBooking()
-        {
-            Console.WriteLine("Please select a date and room first.");
-        }
-    }
-
-    // Конкретное состояние
-    class RoomSelectionState : BookingState
-    {
-        public override void SelectDate(DateTime date)
-        {
-            Console.WriteLine("Date already selected: " + date);
-        }
-
-        public override void SelectRoom(string roomNumber)
-        {
-            Console.WriteLine("Selected room: " + roomNumber);
-            // Переход к следующему состоянию
-            context.TransitionTo(new BookingConfirmationState());
-        }
-
-        public override void ConfirmBooking()
-        {
-            Console.WriteLine("Please select a room first.");
-        }
-    }
-
-    // Конкретное состояние
-    class BookingConfirmationState : BookingState
-    {
-        public override void SelectDate(DateTime date)
-        {
-            Console.WriteLine("Date already selected: " + date);
-        }
-
-        public override void SelectRoom(string roomNumber)
-        {
-            Console.WriteLine("Room already selected: " + roomNumber);
-        }
-
-        public override void ConfirmBooking()
-        {
-            Console.WriteLine("Booking confirmed.");
-            // Другие действия после подтверждения бронирования
-        }
-    }
-
-    class Room_State
-    {
-        private RoomState currentState;
-
-        public Room_State()
-        {
-            TransitionTo(new NotRentedState());
-        }
-
-        public void TransitionTo(RoomState state)
-        {
-            currentState = state;
-            currentState.SetRoom(this);
-        }
-
-        public void RentRoom()
-        {
-            currentState.RentRoom();
-        }
-
-        public void CheckOutRoom()
-        {
-            currentState.CheckOutRoom();
-        }
-
-        public void CleanRoom()
-        {
-            currentState.CleanRoom();
-        }
-
-        public void RepairRoom()
-        {
-            currentState.RepairRoom();
-        }
-    }
-
-    // Абстрактное состояние комнаты
-    abstract class RoomState
-    {
-        protected Room_State room;
-
-        public void SetRoom(Room_State room)
+        public RoomBookingState(Room room)
         {
             this.room = room;
+            isBooked = false;
+            isUnderCleaning = false;
+            isUnderRepair = false;
         }
 
-        public abstract void RentRoom();
-        public abstract void CheckOutRoom();
-        public abstract void CleanRoom();
-        public abstract void RepairRoom();
-    }
-
-    // Конкретное состояние: комната сдана
-    class RentedState : RoomState
-    {
-        public override void RentRoom()
+        public void BookRoom()
         {
-            Console.WriteLine("Room is already rented.");
+            if (!isBooked && !isUnderCleaning && !isUnderRepair)
+            {
+                isBooked = true;
+                Console.WriteLine("Room {0} has been booked.", room.RoomNumber);
+            }
+            else
+            {
+                Console.WriteLine("Room {0} cannot be booked.", room.RoomNumber);
+            }
         }
 
-        public override void CheckOutRoom()
+        public void CancelBooking()
         {
-            Console.WriteLine("Checking out the room.");
-            // Переход к состоянию "не сдана"
-            room.TransitionTo(new NotRentedState());
+            if (isBooked)
+            {
+                isBooked = false;
+                Console.WriteLine("Booking for Room {0} has been canceled.", room.RoomNumber);
+            }
+            else
+            {
+                Console.WriteLine("There is no booking for Room {0}.", room.RoomNumber);
+            }
         }
 
-        public override void CleanRoom()
+        public void SetCleaningState()
         {
-            Console.WriteLine("Cannot clean a rented room.");
+            if (!isBooked && !isUnderCleaning && !isUnderRepair)
+            {
+                isUnderCleaning = true;
+                Console.WriteLine("Room {0} is now under cleaning.", room.RoomNumber);
+            }
+            else
+            {
+                Console.WriteLine("Cannot set cleaning state for Room {0}.", room.RoomNumber);
+            }
         }
 
-        public override void RepairRoom()
+        public void SetRepairState()
         {
-            Console.WriteLine("Cannot repair a rented room.");
-        }
-    }
-
-    // Конкретное состояние: комната не сдана
-    class NotRentedState : RoomState
-    {
-        public override void RentRoom()
-        {
-            Console.WriteLine("Renting the room.");
-            // Переход к состоянию "сдана"
-            room.TransitionTo(new RentedState());
+            if (!isBooked && !isUnderCleaning && !isUnderRepair)
+            {
+                isUnderRepair = true;
+                Console.WriteLine("Room {0} is now under repair.", room.RoomNumber);
+            }
+            else
+            {
+                Console.WriteLine("Cannot set repair state for Room {0}.", room.RoomNumber);
+            }
         }
 
-        public override void CheckOutRoom()
+        public void ProcessNextState()
         {
-            Console.WriteLine("Cannot check out a room that is not rented.");
-        }
-
-        public override void CleanRoom()
-        {
-            Console.WriteLine("Cleaning the room.");
-            // Переход к состоянию "уборка"
-            room.TransitionTo(new CleaningState());
-        }
-
-        public override void RepairRoom()
-        {
-            Console.WriteLine("Cannot repair a room that is not rented.");
-        }
-    }
-
-    // Конкретное состояние: уборка комнаты
-    class CleaningState : RoomState
-    {
-        public override void RentRoom()
-        {
-            Console.WriteLine("Cannot rent a room that is being cleaned.");
-        }
-
-        public override void CheckOutRoom()
-        {
-            Console.WriteLine("Cannot check out a room that is being cleaned.");
-        }
-
-        public override void CleanRoom()
-        {
-            Console.WriteLine("Room is already being cleaned.");
-        }
-
-        public override void RepairRoom()
-        {
-            Console.WriteLine("Cannot repair a room that is being cleaned.");
+            if (isUnderCleaning)
+            {
+                isUnderCleaning = false;
+                Console.WriteLine("Cleaning of Room {0} is complete.", room.RoomNumber);
+            }
+            else if (isUnderRepair)
+            {
+                isUnderRepair = false;
+                Console.WriteLine("Repair of Room {0} is complete.", room.RoomNumber);
+            }
+            else
+            {
+                Console.WriteLine("No further state to process for Room {0}.", room.RoomNumber);
+            }
         }
     }
 
-    // Конкретное состояние: комната в ремонте
-    class RepairState : RoomState
+    // Конкретный класс комнаты с добавлением состояния и бронирования
+    class RoomWithBooking : Room
     {
-        public override void RentRoom()
+        private RoomBookingState bookingState;
+
+        public RoomWithBooking(string roomNumber) : base(roomNumber)
         {
-            Console.WriteLine("Cannot rent a room that is under repair.");
+            bookingState = new RoomBookingState(this);
         }
 
-        public override void CheckOutRoom()
+        public void BookRoom()
         {
-            Console.WriteLine("Cannot check out a room that is under repair.");
+            bookingState.BookRoom();
         }
 
-        public override void CleanRoom()
+        public void CancelBooking()
         {
-            Console.WriteLine("Cannot clean a room that is under repair.");
+            bookingState.CancelBooking();
         }
 
-        public override void RepairRoom()
+        public void SetCleaningState()
         {
-            Console.WriteLine("Room is already under repair.");
+            bookingState.SetCleaningState();
+        }
+
+        public void SetRepairState()
+        {
+            bookingState.SetRepairState();
+        }
+
+        public void ProcessNextState()
+        {
+            bookingState.ProcessNextState();
         }
     }
     #endregion
@@ -374,31 +237,30 @@ namespace HotelPatterns
     {
         static void Main(string[] args)
         {
-            Hotel luxuryHotel = new LuxuryHotel();
-            Room luxuryRoom = luxuryHotel.CreateRoom();
-            luxuryRoom.Display();
-
-            Hotel budgetHotel = new BudgetHotel();
-            Room budgetRoom = budgetHotel.CreateRoom();
-            budgetRoom.Display();
+            RoomWithBooking room1 = new RoomWithBooking("101");
+            RoomWithBooking room2 = new RoomWithBooking("102");
 
             IExternalHotelManagementSystem externalHotelManagementSystem = new ExternalHotelManagementSystem();
             IHotelManagementSystem hotelManagementSystem = new HotelManagementSystemAdapter(externalHotelManagementSystem);
             hotelManagementSystem.BookRoom("101", DateTime.Now, DateTime.Now.AddDays(3));
             hotelManagementSystem.CancelBooking("101");
 
-            BookingContext bookingContext = new BookingContext();
+            room1.BookRoom();
+            room2.SetCleaningState();
+            room1.BookRoom();
 
-            bookingContext.SelectDate(DateTime.Now);
-            bookingContext.SelectRoom("101");
-            bookingContext.ConfirmBooking();
+            room1.ProcessNextState();
+            room2.ProcessNextState();
 
-            Room_State room = new Room_State();
-            room.RentRoom(); // Комната сдана
-            room.CheckOutRoom(); // Комната не сдана
-            room.CleanRoom(); // Комната в уборке
-            room.RepairRoom(); // Комната в ремонте
-            room.CleanRoom(); //Убрать комнату, которая уже убирается
+            room1.BookRoom();
+            room2.SetRepairState();
+
+            room2.BookRoom();
+            room2.ProcessNextState();
+
+            room2.BookRoom();
+            room2.CancelBooking();
+            room2.CancelBooking();
         }
     }
 }
